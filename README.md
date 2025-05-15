@@ -24,9 +24,10 @@ This tool provides a live view of the orderbook and simulates trade execution us
 
 ## 📸 Screenshots
 
-| Live Orderbook                             | Execution Metrics                          |
-|-------------------------------------------|-------------------------------------------|
-| ![Live Orderbook](https://github.com/user-attachments/assets/79a561d7-1d7a-468d-8a4c-0a1e821f39a0.png) | ![Execution Metrics](![image](https://github.com/user-attachments/assets/58ccab9f-5e9e-4f52-bfee-2070689b2bd5)
+| Execution Metrics                          |
+|-------------------------------------------|
+| ![Execution Metrics](![image](![image](https://github.com/user-attachments/assets/ffd34a28-cac5-42bc-86e3-76461481c8ae)
+)
 ) |
 
 
