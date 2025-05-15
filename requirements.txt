@@ -1,0 +1,7 @@
+streamlit
+websockets
+numpy
+pandas
+scikit-learn
+matplotlib
+statsmodels
