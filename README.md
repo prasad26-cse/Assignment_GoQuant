@@ -26,7 +26,8 @@ This tool provides a live view of the orderbook and simulates trade execution us
 
 | Execution Metrics                          |
 |-------------------------------------------|
-| ![Execution Metrics](![image](![image](https://github.com/user-attachments/assets/ffd34a28-cac5-42bc-86e3-76461481c8ae)
+| ![Execution Metrics](![image](![image](![image](https://github.com/user-attachments/assets/a32932cb-0450-464f-bee1-b33dec694270)
+)
 )
 ) |
 
