@@ -4,7 +4,7 @@ import plotly.graph_objs as go
 from data.websocket_client import latest_orderbook, run_in_thread, get_trade_metrics
 from streamlit_autorefresh import st_autorefresh
 from utils.almgren_chriss import optimal_execution
-import datetime  # Import the datetime module
+import datetime
 
 # Start websocket listener once
 if 'ws_thread_started' not in st.session_state:
@@ -15,25 +15,20 @@ st.set_page_config(layout="wide")
 st.title("GoQuant Real-time Trade Simulator")
 
 # Auto-refresh every 1 second to update orderbook and metrics
-st_autorefresh(interval=1000, limit=None, key="refresh")  # Refresh every 1 second
+st_autorefresh(interval=1000, limit=None, key="refresh")
 
-# Layout: 3 columns with wide spacing
+# Layout: 3 columns
 col1, spacer1, col2, spacer2, col3 = st.columns([1.2, 0.2, 2.4, 0.2, 1.2])
 
 # Add a header section for the date and time
 header_col1, header_col2, header_col3 = st.columns([1, 2, 1])
-with header_col1:
-    pass
 with header_col2:
-        now = datetime.datetime.now()
-        date_time_str = now.strftime("%Y-%m-%d %H:%M:%S")
-        st.markdown(f"<h3 style='text-align: center;'>{date_time_str}</h3>", unsafe_allow_html=True)
-with header_col3:
-    pass
+    now = datetime.datetime.now()
+    date_time_str = now.strftime("%Y-%m-%d %H:%M:%S")
+    st.markdown(f"<h3 style='text-align: center;'>{date_time_str}</h3>", unsafe_allow_html=True)
 
 with col1:
     st.header("Input Parameters")
-
     exchange = st.selectbox("Exchange", ["OKX"], disabled=True)
     asset = st.selectbox("Spot Asset", ["BTC-USDT-SWAP"], disabled=True)
     order_type = st.selectbox("Order Type", ["market"], disabled=True)
@@ -42,7 +37,6 @@ with col1:
     volatility = st.slider("Volatility (%)", 0.0, 10.0, 2.5)
     fee_tier = st.selectbox("Fee Tier", ["Regular", "VIP 1", "VIP 2"])
 
-    # Almgren-Chriss Model Parameters
     st.subheader("Execution Model Parameters")
     time_steps = st.slider("Time Steps", min_value=5, max_value=100, value=50)
     risk_aversion = st.slider("Risk Aversion", min_value=0.0001, max_value=0.01, value=0.001)
@@ -58,7 +52,6 @@ with col2:
 
     orderbook = latest_orderbook
 
-    # Initialize or retrieve the candlestick data
     if 'candlestick_data' not in st.session_state:
         st.session_state.candlestick_data = pd.DataFrame(columns=['time', 'open', 'high', 'low', 'close'])
         st.session_state.current_candle = {
@@ -83,28 +76,23 @@ with col2:
         now = datetime.datetime.now()
         current_time = now.strftime("%Y-%m-%d %H:%M:%S")
 
-        # Update OHLC for the current candle
         if st.session_state.current_candle['time'] is None:
-            st.session_state.current_candle['time'] = current_time
-            st.session_state.current_candle['open'] = mid_price
-            st.session_state.current_candle['high'] = mid_price
-            st.session_state.current_candle['low'] = mid_price
-            st.session_state.current_candle['close'] = mid_price
+            st.session_state.current_candle = {
+                'time': current_time,
+                'open': mid_price,
+                'high': mid_price,
+                'low': mid_price,
+                'close': mid_price,
+            }
         else:
             st.session_state.current_candle['high'] = max(st.session_state.current_candle['high'], mid_price)
             st.session_state.current_candle['low'] = min(st.session_state.current_candle['low'], mid_price)
             st.session_state.current_candle['close'] = mid_price
 
-        # Check if a new candle should start (every 1 second in this example)
-        # In a real application, you would use a more robust time-based mechanism
-        #  (e.g., checking if a new second has started).
         if current_time[-2:] != st.session_state.current_candle['time'][-2:]:
-            # Append the current candle to the dataframe
             new_candle_data = pd.DataFrame([st.session_state.current_candle])
             st.session_state.candlestick_data = pd.concat([st.session_state.candlestick_data, new_candle_data],
-                                                        ignore_index=True)
-
-            # Start a new candle
+                                                          ignore_index=True)
             st.session_state.current_candle = {
                 'time': current_time,
                 'open': mid_price,
@@ -113,7 +101,6 @@ with col2:
                 'close': mid_price,
             }
 
-        # Create the candlestick chart with updated style
         fig = go.Figure(data=[go.Candlestick(
             x=st.session_state.candlestick_data['time'],
             open=st.session_state.candlestick_data['open'],
@@ -121,46 +108,25 @@ with col2:
             low=st.session_state.candlestick_data['low'],
             close=st.session_state.candlestick_data['close'],
             name='Price',
-            increasing=dict(
-                line=dict(color='#069039', width=1),  # Green for increasing candles
-                fillcolor='#069039'
-            ),
-            decreasing=dict(
-                line=dict(color='#CE2121', width=1),  # Red for decreasing candles
-                fillcolor='#CE2121'
-            ),
+            increasing=dict(line=dict(color='#069039', width=1), fillcolor='#069039'),
+            decreasing=dict(line=dict(color='#CE2121', width=1), fillcolor='#CE2121'),
         )])
 
         fig.update_layout(
             title="Candlestick Chart",
             yaxis_title="Price (USD)",
             xaxis_title="Time",
-            xaxis_showgrid=False,  # Remove x-axis gridlines
-            yaxis_showgrid=True,  # Keep y-axis gridlines
-            plot_bgcolor='white',  # Set background color to white
-            margin=dict(l=10, r=10, t=30, b=10),  # Adjust margins for a cleaner look
-            showlegend=False, # Remove legend
-            font=dict(
-                family="Arial, sans-serif",  # More common font
-                size=10,
-                color="#333"  # Darker, more readable text
-            ),
+            xaxis_showgrid=False,
+            yaxis_showgrid=True,
+            plot_bgcolor='white',
+            margin=dict(l=10, r=10, t=30, b=10),
+            showlegend=False,
+            font=dict(family="Arial, sans-serif", size=10, color="#333"),
         )
-        fig.update_yaxes(
-            gridcolor="#e0e0e0",  # Lighter gridlines
-            zerolinecolor="#999",
-            tickformat = '.2f'
-        )
-        fig.update_xaxes(
-            tickangle=-45,
-            gridcolor="#e0e0e0",  # Lighter gridlines
-            zerolinecolor="#999",
-        )
+        fig.update_yaxes(gridcolor="#e0e0e0", zerolinecolor="#999", tickformat='.2f')
+        fig.update_xaxes(tickangle=-45, gridcolor="#e0e0e0", zerolinecolor="#999")
 
-        st.plotly_chart(fig, use_container_width=True, clear_figure=False,
-                        config={'modeBarButtonsToAdd': ['pan2d', 'zoomIn2d', 'zoomOut2d', 'resetScale2d',
-                                                    'hoverClosestCartesian', 'toImage', 'autoScale2d', 'select2d',
-                                                    'lasso2d']})
+        st.plotly_chart(fig, use_container_width=True, clear_figure=False)
 
         if simulate_btn:
             st.session_state.latest_metrics = get_trade_metrics(orderbook, quantity, volatility, fee_tier)
@@ -172,7 +138,7 @@ with col2:
                 beta=beta,
                 gamma=gamma,
                 eta=eta,
-                volatility=volatility / 100.0  # Convert % to decimal
+                volatility=volatility / 100.0
             )
     else:
         st.text("Waiting for orderbook data...")
@@ -183,16 +149,34 @@ with col3:
     if "latest_metrics" in st.session_state:
         metrics = st.session_state.latest_metrics
 
-        st.metric("Expected Slippage", f"{metrics['slippage']:.4f} USD")
-        st.metric("Expected Fees", f"{metrics['fees']:.4f} USD")
-        st.metric("Market Impact", f"{metrics['market_impact']:.4f} USD")
-        st.metric("Net Cost", f"{metrics['net_cost']:.4f} USD")
+        slippage = metrics['slippage']
+        fees = metrics['fees']
+        market_impact = metrics['market_impact']
+        net_cost = metrics['net_cost']
+
+        st.metric("Expected Slippage", f"{slippage:.4f} USD")
+        st.metric("Expected Fees", f"{fees:.4f} USD")
+        st.metric("Market Impact", f"{market_impact:.4f} USD")
+        st.metric("Net Cost", f"{net_cost:.4f} USD")
         st.metric("Maker/Taker Ratio", f"{metrics['maker_taker_ratio'] * 100:.2f}%")
         st.metric("Internal Latency", f"{metrics['latency']:.2f} ms")
 
+        # Pie chart for slippage, fees, market impact
+        pie_labels = ['Slippage', 'Fees', 'Market Impact']
+        pie_values = [slippage, fees, market_impact]
+
+        pie_fig = go.Figure(data=[go.Pie(
+            labels=pie_labels,
+            values=pie_values,
+            textinfo='label+percent',
+            hole=0.4
+        )])
+
+        pie_fig.update_layout(title="Cost Breakdown Pie Chart")
+        st.plotly_chart(pie_fig, use_container_width=True)
+
     if "execution_result" in st.session_state:
         st.subheader("Optimal Execution Trajectory")
-
         _, _, inventory_path, optimal_trajectory = st.session_state.execution_result
 
         execution_df = pd.DataFrame({
