@@ -1,6 +1,7 @@
 # GoQuant Real-time Trade Simulator 📈
 
 A real-time, high-performance trade simulator built using **Streamlit**, **Plotly**, and **WebSocket integration** with the **OKX Exchange**.
+
 🚀 **[Live Demo](https://prasad26-cse-assignment-goquant-app-wu9e9s.streamlit.app/)**
 
 This tool provides a live view of the orderbook and simulates trade execution using market models including:
@@ -52,30 +53,38 @@ pip install -r requirements.txt
 ```
 streamlit run app.py
 ```
-# 🧠 Models Used
-# Almgren-Chriss Optimal Execution
-Minimizes cost + risk for splitting trades over time using:
-Time discretization
-Volatility estimates
-Temporary/permanent market impact modeling
+## 🧠 Models Used
 
-# Regression-Based Slippage Estimation
-Computes expected slippage per trade volume
-Classifies trades as Maker or Taker based on fee tier & timing
+- **Almgren-Chriss Optimal Execution**  
+  - Minimizes cost and risk for splitting trades over time  
+  - Uses time discretization  
+  - Incorporates volatility estimates  
+  - Models temporary and permanent market impacts  
 
-# 📈 Metrics Computed
-Expected Slippage
-Expected Fees (based on OKX fee tiers)
-Market Impact
-Net Trading Cost
-Maker/Taker Ratio
-Internal Latency (ms)
+- **Regression-Based Slippage Estimation**  
+  - Computes expected slippage per trade volume  
+  - Classifies trades as Maker or Taker based on fee tier and timing  
 
-# 📚 References
-Almgren, R., & Chriss, N. (2000). Optimal execution of portfolio transactions.
-OKX API Docs: https://www.okx.com/docs-v5/en/
 
-# 🧑‍💻 Author
-Prasad Kabade
-B.Tech CSE | Machine Learning & Frontend Developer
-LinkedIn | GitHub
+## 📈 Metrics Computed
+
+- Expected Slippage  
+- Expected Fees (based on OKX fee tiers)  
+- Market Impact  
+- Net Trading Cost  
+- Maker/Taker Ratio  
+- Internal Latency (ms)  
+
+
+## 📚 References
+
+- Almgren, R., & Chriss, N. (2000). *Optimal execution of portfolio transactions.*  
+- OKX API Docs: [https://www.okx.com/docs-v5/en/](https://www.okx.com/docs-v5/en/)  
+
+
+## 🧑‍💻 Author
+
+**Prasad Kabade**  
+B.Tech CSE | Machine Learning & Frontend Developer  
+[LinkedIn](https://www.linkedin.com/in/prasadkabade) | [GitHub](https://github.com/prasadkabade)
+
